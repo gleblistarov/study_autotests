@@ -15,8 +15,22 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation("org.seleniumhq.selenium:selenium-java:4.48.0")
-    // Source: https://mvnrepository.com/artifact/junit/junit
-    testImplementation("junit:junit:4.13.2")
+    // Source: https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+tasks.register("finishTests") {
+    dependsOn("test")
+    doLast {
+        println("Test run is over")
+    }
 }
 
 tasks.test {
