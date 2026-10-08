@@ -15,14 +15,20 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation("org.seleniumhq.selenium:selenium-java:4.48.0")
-    // Source: https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
 }
 
 tasks.test {
-    useJUnitPlatform()
+    val tags = (project.findProperty("tags") as String?)?.split(",")?.map { it.trim() }
+    val excluded = (project.findProperty("excludeTags") as String?)?.split(",")?.map { it.trim() }
+
+    useJUnitPlatform {
+        if (tags != null) includeTags(*tags.toTypedArray())
+        if (excluded != null) excludeTags(*excluded.toTypedArray())
+    }
     testLogging {
         showStandardStreams = true
+        events("passed", "failed", "skipped")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
 }
 
@@ -31,8 +37,4 @@ tasks.register("finishTests") {
     doLast {
         println("Test run is over")
     }
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
