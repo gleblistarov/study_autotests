@@ -13,8 +13,10 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    // Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation("org.seleniumhq.selenium:selenium-java:4.48.0")
+    testImplementation("io.rest-assured:rest-assured:5.5.1")
+    testImplementation("org.assertj:assertj-core:3.27.3")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
 }
 
 tasks.test {
@@ -25,8 +27,30 @@ tasks.test {
         if (tags != null) includeTags(*tags.toTypedArray())
         if (excluded != null) excludeTags(*excluded.toTypedArray())
     }
+
+    val runsSelectedTests = gradle.startParameter.taskRequests
+        .flatMap { it.args }
+        .any { it == "--tests" || it.startsWith("--tests=") }
+    if (tags == null && !runsSelectedTests) {
+        (options as JUnitPlatformOptions).excludeTags("api")
+    }
     testLogging {
         showStandardStreams = true
+        events("passed", "failed", "skipped")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
+}
+
+tasks.register<Test>("apiTest") {
+    description = "Запускает только API-тесты (тег api)"
+    group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    useJUnitPlatform {
+        includeTags("api")
+    }
+    outputs.upToDateWhen { false }
+    testLogging {
         events("passed", "failed", "skipped")
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
