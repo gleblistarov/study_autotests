@@ -32,7 +32,7 @@ tasks.test {
         .flatMap { it.args }
         .any { it == "--tests" || it.startsWith("--tests=") }
     if (tags == null && !runsSelectedTests) {
-        (options as JUnitPlatformOptions).excludeTags("api")
+        (options as JUnitPlatformOptions).excludeTags("api", "ui")
     }
     testLogging {
         showStandardStreams = true
@@ -48,6 +48,21 @@ tasks.register<Test>("apiTest") {
     classpath = sourceSets["test"].runtimeClasspath
     useJUnitPlatform {
         includeTags("api")
+    }
+    outputs.upToDateWhen { false }
+    testLogging {
+        events("passed", "failed", "skipped")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
+}
+
+tasks.register<Test>("uiTest") {
+    description = "Запускает только UI-тесты (тег ui)"
+    group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    useJUnitPlatform {
+        includeTags("ui")
     }
     outputs.upToDateWhen { false }
     testLogging {
