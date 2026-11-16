@@ -13,10 +13,11 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation("org.seleniumhq.selenium:selenium-java:4.48.0")
+    implementation("org.seleniumhq.selenium:selenium-java:4.51.0")
     testImplementation("io.rest-assured:rest-assured:5.5.1")
     testImplementation("org.assertj:assertj-core:3.27.3")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+    testImplementation("com.codeborne:selenide:7.19.1")
 }
 
 tasks.test {
