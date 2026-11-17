@@ -67,6 +67,7 @@ tasks.register<Test>("uiTest") {
     }
     outputs.upToDateWhen { false }
     testLogging {
+        showStandardStreams = true
         events("passed", "failed", "skipped")
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
